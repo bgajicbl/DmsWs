@@ -17,7 +17,7 @@ public class Migration {
 
 	public static void main(String[] args) {
 		Migration m = new Migration();
-		m.migrateSubscriberToCustomer("9012","1012618528");
+		m.migrateSubscriberToCustomer("9012", "1012618528");
 	}
 
 	public void migrateSubscriberToCustomer(String customer, String subscriber) {
@@ -33,7 +33,7 @@ public class Migration {
 			System.out.println(c.getId());
 			addSubscriber(c, subscriber);
 			addSubscriberToMetadata(c);
-			//System.out.println(c.getMetadata().get(0).getSubscriber());
+			// System.out.println(c.getMetadata().get(0).getSubscriber());
 		}
 		try {
 			EntityManagerSingleton.getEntityManager().getTransaction().begin();
@@ -41,8 +41,11 @@ public class Migration {
 			EntityManagerSingleton.getEntityManager().getTransaction().commit();
 			System.out.println("saved!");
 			// logger.warn("Customer created: " + customerId);
-		} catch (RollbackException re) {
-			System.err.println("failed!");
+		} catch (Exception re) {
+			if (EntityManagerSingleton.getEntityManager().getTransaction().isActive()) {
+				EntityManagerSingleton.getEntityManager().getTransaction().rollback();
+			}
+			System.err.println("failed! " +re.getMessage());
 		}
 
 	}
@@ -66,7 +69,7 @@ public class Migration {
 	private void addSubscriberToMetadata(Customer cust) {
 		List<Metadata> metaList = cust.getMetadata();
 		if (!metaList.isEmpty()) {
-			for(Metadata m : metaList){
+			for (Metadata m : metaList) {
 				m.setSubscriber(cust.getSubscribers().get(0));
 			}
 			c.setMetadata(metaList);

@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -40,7 +41,7 @@ public class Customer implements Serializable {
 	
 	//bi-directional many-to-one association to Subscriber
 	@OneToMany(mappedBy="customer", cascade = CascadeType.ALL)
-	@JsonManagedReference
+	@JsonBackReference
 	private List<Subscriber> subscribers;
 
 	//bi-directional many-to-one association to Metadata

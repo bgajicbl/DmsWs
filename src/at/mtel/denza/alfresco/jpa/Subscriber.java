@@ -17,6 +17,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 /**
  * The persistent class for the Subscriber database table.
  * 
@@ -40,7 +41,7 @@ public class Subscriber implements Serializable {
 	//bi-directional many-to-one association to Customer
 	@ManyToOne
 	@JoinColumn(name="customer_id")
-    @JsonBackReference
+	@JsonManagedReference
 	private Customer customer;
 
 	//bi-directional many-to-one association to Metadata
@@ -102,7 +103,7 @@ public class Subscriber implements Serializable {
 	}
 
 	public void setCustomer(Customer customer) {
-		this.customer = customer;
+		this.customer = customer; 
 	}
 
 	@Override

@@ -41,7 +41,7 @@ public class Subscriber implements Serializable {
 	//bi-directional many-to-one association to Customer
 	@ManyToOne
 	@JoinColumn(name="customer_id")
-	@JsonManagedReference
+	@JsonBackReference
 	private Customer customer;
 
 	//bi-directional many-to-one association to Metadata

@@ -41,7 +41,7 @@ public class Customer implements Serializable {
 	
 	//bi-directional many-to-one association to Subscriber
 	@OneToMany(mappedBy="customer", cascade = CascadeType.ALL)
-	@JsonBackReference
+	@JsonManagedReference
 	private List<Subscriber> subscribers;
 
 	//bi-directional many-to-one association to Metadata

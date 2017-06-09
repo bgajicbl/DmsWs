@@ -35,7 +35,7 @@ public class Subscriber implements Serializable {
 	@Column(name="subscriber_id")
 	private String subscriberId;
 
-	private Long msisdn;
+	private Long msisdn; 
 	
 	//bi-directional many-to-one association to Customer
 	@ManyToOne

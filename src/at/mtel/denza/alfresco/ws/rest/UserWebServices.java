@@ -1,5 +1,8 @@
 package at.mtel.denza.alfresco.ws.rest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -29,6 +32,20 @@ public class UserWebServices {
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Path("/users")
 	public Response getUsers() {
-		return Response.ok(FunctionIntegrator.getAllUsers()).build();
+		List<User> users = FunctionIntegrator.getAllUsers();
+		/*List<User> maskedUsers = new ArrayList<>();
+		for(User u : users) {
+			String password = "";
+			if(u.getPassword().length()>2) {
+				password = u.getPassword().substring(0, 2);
+			}else {
+				password = u.getPassword();
+			}
+			password += "****";
+			u.setPassword(password);
+			maskedUsers.add(u);
+		}*/
+		
+		return Response.ok(users).build();
 	}
 }

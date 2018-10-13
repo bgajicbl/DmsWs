@@ -25,6 +25,8 @@ import org.apache.chemistry.opencmis.commons.data.PropertyData;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException;
 
+import at.mtel.denza.alfresco.util.AppPropertyReader;
+
 @Path("/alfresco")
 public class DocumentWebServices { 
 
@@ -132,7 +134,7 @@ public class DocumentWebServices {
 		return responseBuilder.build();
 	}
 
-	public static String ATOMPUB_URL = "http://127.0.0.1:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom";
+	public static String ATOMPUB_URL = AppPropertyReader.getParameter("alfresco.atompub.url");
 	public static String QUERY = "SELECT alfcmis:nodeRef FROM cmis:document WHERE cmis:name = ?";
 	public static String EBILL_SUFFIX = "_eBill.PDF";
 	public static String POST_SUFFIX = "_post.PDF";

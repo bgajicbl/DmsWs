@@ -39,6 +39,14 @@ public class CustomerWebServices {
 
 		return Response.ok(customerList).build();
 	}*/
+	
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Path("/filter/{f}")
+	public Response getFilteredCustomer(@PathParam("f") String filterStr) {
+		List<Customer> customerList = FunctionIntegrator.getFilteredCustomers(filterStr);
+		return Response.ok(customerList).build();
+	}
 
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })

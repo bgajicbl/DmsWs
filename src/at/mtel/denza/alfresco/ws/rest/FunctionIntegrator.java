@@ -20,8 +20,17 @@ public class FunctionIntegrator {
 	public static List<Customer> getAllCustomers() {
 		TypedQuery<Customer> query = EntityManagerSingleton.getEntityManager().createQuery(allCustomersQuery,
 				Customer.class);
+		query.setMaxResults(10);
 		return query.getResultList();
 	}
+	
+	// Svi klijenti koji postoje pocinju sa filter stringom
+		public static List<Customer> getFilteredCustomers(String filter) {
+			TypedQuery<Customer> query = EntityManagerSingleton.getEntityManager().createQuery(filteredCustomerQuery,
+					Customer.class);
+			query.setParameter("filter", filter);
+			return query.getResultList();
+		}
 
 	// Svi msisdn za customer id
 	public static List<Customer> getCustomer(String id) {
@@ -34,6 +43,7 @@ public class FunctionIntegrator {
 	public static List<Subscriber> getAllSubscribers() {
 		TypedQuery<Subscriber> query = EntityManagerSingleton.getEntityManager().createQuery(allSubscribersQuery,
 				Subscriber.class);
+		query.setMaxResults(10);
 		return query.getResultList();
 	}
 
@@ -48,6 +58,7 @@ public class FunctionIntegrator {
 	public static List<Metadata> getAllMetadata() {
 		TypedQuery<Metadata> query = EntityManagerSingleton.getEntityManager().createQuery(allMetadataQuery,
 				Metadata.class);
+		query.setMaxResults(10);
 		return query.getResultList();
 	}
 
@@ -161,6 +172,7 @@ public class FunctionIntegrator {
 
 	private static String allCustomersQuery = "SELECT c FROM Customer c";
 	private static String customerQuery = "SELECT c FROM Customer c WHERE c.customerId = :customer";
+	private static String filteredCustomerQuery = "SELECT c FROM Customer c WHERE c.customerId LIKE CONCAT(:filter, '%')";
 	private static String allSubscribersQuery = "SELECT s FROM Subscriber s";
 	private static String subscriberQuery = "SELECT s FROM Subscriber s WHERE s.subscriberId = :subscriber";
 	private static String allMetadataQuery = "SELECT m FROM Metadata m order by m.id ASC";

@@ -25,7 +25,7 @@ public class SubscriberWebServices {
 	private static final Logger logger = LogManager.getLogger("RestWebService");
 
 	// Pozovi metodu koja vraca sve klijente
-	@GET
+	/*@GET
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Path("/")
 	public Response getUsers() {
@@ -35,7 +35,7 @@ public class SubscriberWebServices {
 			return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
 
 		return Response.ok(sList).build();
-	}
+	}*/
 
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })

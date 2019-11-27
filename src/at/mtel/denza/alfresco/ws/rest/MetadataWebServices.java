@@ -22,7 +22,7 @@ import at.mtel.denza.alfresco.util.DateUtil;
 public class MetadataWebServices {
 
 	// Metadata za sve dokumente
-	@GET
+	/*@GET
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Path("/")
 	public Response getAllIds() {
@@ -30,14 +30,14 @@ public class MetadataWebServices {
 		GenericEntity<List<Metadata>> list = new GenericEntity<List<Metadata>>(x) {
 		};
 		return Response.ok(list).build();
-	}
+	}*/
 
 	// Metadata za sve dokumente za poslati ID klijenta
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Path("/customer/{customer}")
-	public Response getAllDocuments4Customer(@PathParam("customer") int customerId) {
-		List<Customer> customerList = FunctionIntegrator.getCustomer(Integer.toString(customerId));
+	public Response getAllDocuments4Customer(@PathParam("customer") String customerId) {
+		List<Customer> customerList = FunctionIntegrator.getCustomer(customerId);
 		if (customerList.size() == 0)
 			return Response.status(Response.Status.NOT_FOUND).build();
 
@@ -51,9 +51,9 @@ public class MetadataWebServices {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/customer/{customer}/doctype/{doctype}")
-	public Response getMetadata4CustomerDocType(@PathParam("customer") int customerId,
+	public Response getMetadata4CustomerDocType(@PathParam("customer") String customerId,
 			@PathParam("doctype") int doctype) {
-		List<Customer> customerList = FunctionIntegrator.getCustomer(Integer.toString(customerId));
+		List<Customer> customerList = FunctionIntegrator.getCustomer(customerId);
 		if (customerList.size() == 0)
 			return Response.status(Response.Status.NOT_FOUND).build();
 
@@ -67,9 +67,9 @@ public class MetadataWebServices {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/customer/{customer}/doctype/{doctype}/from/{from}/to/{to}")
-	public Response getMetadata4CustomerDocTypePeriod(@PathParam("customer") int customerId,
+	public Response getMetadata4CustomerDocTypePeriod(@PathParam("customer") String customerId,
 			@PathParam("doctype") int doctype, @PathParam("from") String from, @PathParam("to") String to) {
-		List<Customer> customerList = FunctionIntegrator.getCustomer(Integer.toString(customerId));
+		List<Customer> customerList = FunctionIntegrator.getCustomer(customerId);
 		if (customerList.size() == 0)
 			return Response.status(Response.Status.NOT_FOUND).build(); 
 		try {
@@ -85,8 +85,8 @@ public class MetadataWebServices {
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Path("/subscriber/{subscriber}")
-	public Response getAllDocuments4Subscriber(@PathParam("subscriber") int subscriberId) {
-		List<Subscriber> subscriberList = FunctionIntegrator.getSubscriber(Integer.toString(subscriberId));
+	public Response getAllDocuments4Subscriber(@PathParam("subscriber") String subscriberId) {
+		List<Subscriber> subscriberList = FunctionIntegrator.getSubscriber(subscriberId);
 		if (subscriberList.size() == 0)
 			return Response.status(Response.Status.NOT_FOUND).build();
 
@@ -99,9 +99,9 @@ public class MetadataWebServices {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/subscriber/{subscriber}/doctype/{doctype}")
-	public Response getMetadata4SubscriberDocType(@PathParam("subscriber") int subscriberId,
+	public Response getMetadata4SubscriberDocType(@PathParam("subscriber") String subscriberId,
 			@PathParam("doctype") int doctype) {
-		List<Subscriber> subscriberList = FunctionIntegrator.getSubscriber(Integer.toString(subscriberId));
+		List<Subscriber> subscriberList = FunctionIntegrator.getSubscriber(subscriberId);
 		if (subscriberList.size() == 0)
 			return Response.status(Response.Status.NOT_FOUND).build();
 
@@ -114,9 +114,9 @@ public class MetadataWebServices {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/subscriber/{subscriber}/doctype/{doctype}/from/{from}/to/{to}")
-	public Response getMetadata4SubscriberDocTypePeriod(@PathParam("subscriber") int subscriberId,
+	public Response getMetadata4SubscriberDocTypePeriod(@PathParam("subscriber") String subscriberId,
 			@PathParam("doctype") int doctype, @PathParam("from") String from, @PathParam("to") String to) {
-		List<Subscriber> subscriberList = FunctionIntegrator.getSubscriber(Integer.toString(subscriberId));
+		List<Subscriber> subscriberList = FunctionIntegrator.getSubscriber(subscriberId);
 		if (subscriberList.size() == 0)
 			return Response.status(Response.Status.NOT_FOUND).build(); 
 		
@@ -134,12 +134,12 @@ public class MetadataWebServices {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/insert")
-	public Response insertMetadata(@QueryParam("customerId") int customerId, @QueryParam("subscriberId") String subscriberId,
+	public Response insertMetadata(@QueryParam("customerId") String customerId, @QueryParam("subscriberId") String subscriberId,
 			@QueryParam("fileName") String fileName, @QueryParam("nodeRef") String nodeRef, @QueryParam("period") int period,
 			@QueryParam("documentType") int doctype, @QueryParam("user") int user) {
 		Metadata m = new Metadata();
 		// System.out.println(FunctionIntegrator.getCustomer(String.valueOf(customerId)).size());
-		Customer c = FunctionIntegrator.getCustomer(String.valueOf(customerId)).get(0);
+		Customer c = FunctionIntegrator.getCustomer(customerId).get(0);
 		Subscriber sub = null;
 		if(subscriberId != null){
 			sub = FunctionIntegrator.getSubscriber(subscriberId).get(0);

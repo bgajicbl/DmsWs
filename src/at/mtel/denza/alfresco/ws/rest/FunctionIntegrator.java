@@ -23,20 +23,20 @@ public class FunctionIntegrator {
 		query.setMaxResults(10);
 		return query.getResultList();
 	}
-	
-	// Svi klijenti koji postoje pocinju sa filter stringom
-		public static List<Customer> getFilteredCustomers(String filter) {
-			TypedQuery<Customer> query = EntityManagerSingleton.getEntityManager().createQuery(filteredCustomerQuery,
-					Customer.class);
-			query.setParameter("filter", filter);
-			return query.getResultList();
-		}
 
-	// Svi msisdn za customer id
-	public static List<Customer> getCustomer(String id) {
+	// Svi klijenti koji pocinju sa filter stringom, konvertovanim u lowercase
+	public static List<Customer> getFilteredCustomers(String filter) {
+		TypedQuery<Customer> query = EntityManagerSingleton.getEntityManager().createQuery(filteredCustomerQuery,
+				Customer.class);
+		query.setParameter("filter", filter.toLowerCase());
+		return query.getResultList();
+	}
+
+	// Svi customeri za customer id
+	public static List<Customer> getCustomer(String customerId) {
 		TypedQuery<Customer> query = EntityManagerSingleton.getEntityManager().createQuery(customerQuery,
 				Customer.class);
-		query.setParameter("customer", id);
+		query.setParameter("customer", customerId);
 		return query.getResultList();
 	}
 
@@ -47,10 +47,10 @@ public class FunctionIntegrator {
 		return query.getResultList();
 	}
 
-	public static List<Subscriber> getSubscriber(String id) {
+	public static List<Subscriber> getSubscriber(String subscriberId) {
 		TypedQuery<Subscriber> query = EntityManagerSingleton.getEntityManager().createQuery(subscriberQuery,
 				Subscriber.class);
-		query.setParameter("subscriber", id);
+		query.setParameter("subscriber", subscriberId);
 		return query.getResultList();
 	}
 
@@ -63,29 +63,30 @@ public class FunctionIntegrator {
 	}
 
 	// Metadata za sve dokumente jednog klijenta
-	public static List<Metadata> getMetadata(int customerId) {
+	public static List<Metadata> getMetadata(String customerId) {
 		TypedQuery<Metadata> query = EntityManagerSingleton.getEntityManager().createQuery(metadataQuery,
 				Metadata.class);
-		query.setParameter("customer", String.valueOf((customerId)));
+		query.setParameter("customer", customerId);
 		return query.getResultList();
 	}
 
 	// Metadata za sve dokumente za poslate customerId i doctype
-	public static List<Metadata> getMetadata(int customerId, int doctype) {
-		TypedQuery<Metadata> query = EntityManagerSingleton.getEntityManager().createQuery(metadataDocTypeQuery, Metadata.class);
-		query.setParameter("customer", String.valueOf((customerId)));
+	public static List<Metadata> getMetadata(String customerId, int doctype) {
+		TypedQuery<Metadata> query = EntityManagerSingleton.getEntityManager().createQuery(metadataDocTypeQuery,
+				Metadata.class);
+		query.setParameter("customer", customerId);
 		query.setParameter("doctype", doctype);
 		return query.getResultList();
 	}
 
 	// Metadata za sve dokumente za poslate customerId, doctype i period
-	public static List<Metadata> getMetadata(int customerId, int doctype, String from, String to)
+	public static List<Metadata> getMetadata(String customerId, int doctype, String from, String to)
 			throws IllegalArgumentException {
 		TypedQuery<Metadata> query = EntityManagerSingleton.getEntityManager()
 				.createQuery(metadataDocTypeAndPeriodQuery, Metadata.class);
 		Date fDate = DateUtil.getDateFromString(from);
 		Date toDate = DateUtil.getDateFromString(to);
-		query.setParameter("customer", String.valueOf(customerId));
+		query.setParameter("customer", customerId);
 		query.setParameter("doctype", doctype);
 		query.setParameter("from", fDate);
 		query.setParameter("to", toDate);
@@ -94,30 +95,30 @@ public class FunctionIntegrator {
 
 	///////////////////////////////////////////////////////////////////////////
 	// Metadata za sve dokumente jednog klijenta
-	public static List<Metadata> getSubscriberMetadata(int subscriberId) {
+	public static List<Metadata> getSubscriberMetadata(String subscriberId) {
 		TypedQuery<Metadata> query = EntityManagerSingleton.getEntityManager().createQuery(metadataSubscriberQuery,
 				Metadata.class);
-		query.setParameter("subscriber", String.valueOf((subscriberId)));
+		query.setParameter("subscriber", subscriberId);
 		return query.getResultList();
 	}
 
 	// Metadata za sve dokumente za poslate customerId i doctype
-	public static List<Metadata> getSubscriberMetadata(int subscriberId, int doctype) {
+	public static List<Metadata> getSubscriberMetadata(String subscriberId, int doctype) {
 		TypedQuery<Metadata> query = EntityManagerSingleton.getEntityManager()
 				.createQuery(metadataSubscriberDocTypeQuery, Metadata.class);
-		query.setParameter("subscriber", String.valueOf((subscriberId)));
+		query.setParameter("subscriber", subscriberId);
 		query.setParameter("doctype", doctype);
 		return query.getResultList();
 	}
 
 	// Metadata za sve dokumente za poslate customerId, doctype i period
-	public static List<Metadata> getSubscriberMetadata(int subscriberId, int doctype, String from, String to)
+	public static List<Metadata> getSubscriberMetadata(String subscriberId, int doctype, String from, String to)
 			throws IllegalArgumentException {
 		TypedQuery<Metadata> query = EntityManagerSingleton.getEntityManager()
 				.createQuery(metadataSubscriberDocTypeAndPeriodQuery, Metadata.class);
 		Date fDate = DateUtil.getDateFromString(from);
 		Date toDate = DateUtil.getDateFromString(to);
-		query.setParameter("subscriber", String.valueOf(subscriberId));
+		query.setParameter("subscriber", subscriberId);
 		query.setParameter("doctype", doctype);
 		query.setParameter("from", fDate);
 		query.setParameter("to", toDate);
@@ -172,7 +173,7 @@ public class FunctionIntegrator {
 
 	private static String allCustomersQuery = "SELECT c FROM Customer c";
 	private static String customerQuery = "SELECT c FROM Customer c WHERE c.customerId = :customer";
-	private static String filteredCustomerQuery = "SELECT c FROM Customer c WHERE c.customerId LIKE CONCAT(:filter, '%')";
+	private static String filteredCustomerQuery = "SELECT c FROM Customer c WHERE LOWER(c.customerId) LIKE CONCAT(:filter, '%')";
 	private static String allSubscribersQuery = "SELECT s FROM Subscriber s";
 	private static String subscriberQuery = "SELECT s FROM Subscriber s WHERE s.subscriberId = :subscriber";
 	private static String allMetadataQuery = "SELECT m FROM Metadata m order by m.id ASC";

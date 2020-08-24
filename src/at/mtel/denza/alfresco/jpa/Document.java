@@ -7,14 +7,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
 
-
 /**
  * The persistent class for the documents database table.
  * 
  */
 @Entity
-@Table(name="documents")
-@NamedQuery(name="Document.findAll", query="SELECT d FROM Document d")
+@Table(name = "documents")
+@NamedQuery(name = "Document.findAll", query = "SELECT d FROM Document d")
 public class Document implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -23,8 +22,8 @@ public class Document implements Serializable {
 
 	private String document;
 
-	//bi-directional many-to-one association to Metadata
-	@OneToMany(mappedBy="document")
+	// bi-directional many-to-one association to Metadata
+	@OneToMany(mappedBy = "document")
 	private List<Metadata> metadata;
 
 	public Document() {

@@ -32,7 +32,7 @@ public class DocumentTypeWebServices {
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Path("/documents/{id}")
-	public Response getDocuments( @PathParam("id") int id) {
+	public Response getDocuments(@PathParam("id") int id) {
 		Document x = FunctionIntegrator.getDocument(id);
 		return Response.ok(x).build();
 	}

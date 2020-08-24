@@ -27,19 +27,20 @@ public class CustomerWebServices {
 	private static final Logger logger = LogManager.getLogger("RestWebService");
 
 	// Pozovi metodu koja vraca sve klijente
-	/*@GET
-	@Produces({ MediaType.APPLICATION_JSON })
-	@Path("/")
-	public Response getUsers() {
-		// System.out.println(logger.getLevel());
-		// logger.warn("Entering application.");
-		List<Customer> customerList = FunctionIntegrator.getAllCustomers();
-		if (customerList.size() == 0)
-			return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+	/*
+	 * @GET
+	 * 
+	 * @Produces({ MediaType.APPLICATION_JSON })
+	 * 
+	 * @Path("/") public Response getUsers() { //
+	 * System.out.println(logger.getLevel()); //
+	 * logger.warn("Entering application."); List<Customer> customerList =
+	 * FunctionIntegrator.getAllCustomers(); if (customerList.size() == 0) return
+	 * Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+	 * 
+	 * return Response.ok(customerList).build(); }
+	 */
 
-		return Response.ok(customerList).build();
-	}*/
-	
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Path("/filter/{f}")
@@ -56,7 +57,6 @@ public class CustomerWebServices {
 		c = null;
 		if (customerList.size() > 0) {
 			c = customerList.get(0);
-			// System.out.println("size: "+customerList.size());
 		} else
 			return Response.status(Response.Status.NOT_FOUND).build();
 
@@ -78,7 +78,6 @@ public class CustomerWebServices {
 			logger.warn("Customer created: " + customerId);
 		} catch (RollbackException re) {
 			for (Throwable t = re.getCause(); t != null; t = t.getCause()) {
-				// System.out.println("Exc777:" + t.getCause());
 				if (t instanceof org.postgresql.util.PSQLException)
 					return Response.status(Response.Status.CONFLICT).build();
 			}
@@ -96,10 +95,10 @@ public class CustomerWebServices {
 		List<Customer> customerList = FunctionIntegrator.getCustomer(customerId);
 		List<Subscriber> subscriber = FunctionIntegrator.getSubscriber(subscriberId);
 
-		if (customerList.size() > 0) {//customer vec postoji, dodati subscribera
-			if(subscriber.size() > 0){//subscriber veæ postoji, conflict
+		if (customerList.size() > 0) {// customer vec postoji, dodati subscribera
+			if (subscriber.size() > 0) {// subscriber veæ postoji, conflict
 				return Response.status(Response.Status.CONFLICT).build();
-			}else{//dodati subscribera
+			} else {// dodati subscribera
 				c = customerList.get(0);
 				List<Subscriber> subscriberList = c.getSubscribers();
 				Subscriber subscr = new Subscriber();
@@ -108,7 +107,7 @@ public class CustomerWebServices {
 				subscriberList.add(subscr);
 				c.setSubscribers(subscriberList);
 			}
-		} else {//dodati i customera i subscribera
+		} else {// dodati i customera i subscribera
 			c = new Customer();
 			c.setCustomerId(customerId);
 			List<Subscriber> subscriberList = new ArrayList<>();
@@ -128,7 +127,6 @@ public class CustomerWebServices {
 			logger.warn("Customer created: " + customerId);
 		} catch (RollbackException re) {
 			for (Throwable t = re.getCause(); t != null; t = t.getCause()) {
-				// System.out.println("Exc777:" + t.getCause());
 				if (t instanceof org.postgresql.util.PSQLException)
 					return Response.status(Response.Status.CONFLICT).build();
 			}

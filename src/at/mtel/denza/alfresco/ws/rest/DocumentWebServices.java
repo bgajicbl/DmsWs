@@ -28,7 +28,7 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedExceptio
 import at.mtel.denza.alfresco.util.AppPropertyReader;
 
 @Path("/alfresco")
-public class DocumentWebServices { 
+public class DocumentWebServices {
 
 	@GET
 	@Produces({ MediaType.APPLICATION_OCTET_STREAM })
@@ -43,11 +43,9 @@ public class DocumentWebServices {
 		if (subscriberId != null && subscriberId.length() > 1) {
 			ebill = customerId + SEPARATOR + subscriberId + SEPARATOR + invoiceNo + EBILL_SUFFIX;
 			post = customerId + SEPARATOR + subscriberId + SEPARATOR + invoiceNo + POST_SUFFIX;
-		} 
+		}
 
-		//System.out.println(ebill);  
-
-		Session session = null;  
+		Session session = null;
 		try {
 			session = getSession(ticket);
 		} catch (CmisUnauthorizedException e) {
@@ -79,7 +77,7 @@ public class DocumentWebServices {
 			@QueryParam("alf_ticket") String ticket) {
 
 		String een = customerId + SEPARATOR + invoiceNo + EEN_SUFFIX;
-		
+
 		if (subscriberId != null && subscriberId.length() > 1) {
 			een = customerId + SEPARATOR + subscriberId + SEPARATOR + invoiceNo + EEN_SUFFIX;
 		}
@@ -92,9 +90,7 @@ public class DocumentWebServices {
 		}
 		QueryStatement qs = session.createQueryStatement(QUERY);
 		qs.setString(1, een);
-		//System.out.println("een: " + een);
 		ItemIterable<QueryResult> results = session.query(qs.toQueryString(), false);
-		//System.out.println("res: " + results.getTotalNumItems());
 
 		// if there is no een we are returning HTTP 404
 		if (results.getTotalNumItems() == 0) {

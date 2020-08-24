@@ -18,35 +18,34 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-
 /**
  * The persistent class for the customers database table.
  * 
  */
 @Entity
-@Table(name="customers")
-@NamedQuery(name="Customer.findAll", query="SELECT c FROM Customer c")
-@SequenceGenerator(name="customer_seq",sequenceName="customers_id_seq", allocationSize=1)
+@Table(name = "customers")
+@NamedQuery(name = "Customer.findAll", query = "SELECT c FROM Customer c")
+@SequenceGenerator(name = "customer_seq", sequenceName = "customers_id_seq", allocationSize = 1)
 public class Customer implements Serializable {
-	private static final long serialVersionUID = 1L; 
+	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(generator="customer_seq")
+	@GeneratedValue(generator = "customer_seq")
 	private Integer id;
 
-	@Column(name="customer_id")
+	@Column(name = "customer_id")
 	private String customerId;
 
 	private Long msisdn;
-	
-	//bi-directional many-to-one association to Subscriber
-	@OneToMany(mappedBy="customer", cascade = CascadeType.ALL)
+
+	// bi-directional many-to-one association to Subscriber
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
 	@JsonManagedReference
 	private List<Subscriber> subscribers;
 
-	//bi-directional many-to-one association to Metadata
-	@OneToMany(mappedBy="customer", cascade = CascadeType.ALL)
-	private List<Metadata> metadata; 
+	// bi-directional many-to-one association to Metadata
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+	private List<Metadata> metadata;
 
 	public Customer() {
 	}
@@ -98,8 +97,7 @@ public class Customer implements Serializable {
 
 		return metadata;
 	}
-	
-	
+
 	public List<Subscriber> getSubscribers() {
 		return subscribers;
 	}
@@ -107,13 +105,14 @@ public class Customer implements Serializable {
 	public void setSubscribers(List<Subscriber> subscribers) {
 		this.subscribers = subscribers;
 	}
+
 	public Subscriber addSubscribers(Subscriber subscriber) {
 		getSubscribers().add(subscriber);
 		subscriber.setCustomer(this);
 
 		return subscriber;
 	}
-	
+
 	public Subscriber removeSubscriber(Subscriber subscriber) {
 		getSubscribers().remove(subscriber);
 		subscriber.setCustomer(null);
@@ -151,7 +150,5 @@ public class Customer implements Serializable {
 			return false;
 		return true;
 	}
-	
-	
 
 }

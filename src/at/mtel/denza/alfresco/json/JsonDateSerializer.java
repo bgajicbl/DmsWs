@@ -13,7 +13,8 @@ import at.mtel.denza.alfresco.util.DateUtil;
 public class JsonDateSerializer extends JsonSerializer<Date> {
 
 	@Override
-	public void serialize(Date date, JsonGenerator gen, SerializerProvider provider) throws IOException, JsonProcessingException {
+	public void serialize(Date date, JsonGenerator gen, SerializerProvider provider)
+			throws IOException, JsonProcessingException {
 		String formattedDate = DateUtil.DATE_FORMAT.format(date);
 		gen.writeString(formattedDate);
 	}

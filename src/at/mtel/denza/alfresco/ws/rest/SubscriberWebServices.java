@@ -25,17 +25,19 @@ public class SubscriberWebServices {
 	private static final Logger logger = LogManager.getLogger("RestWebService");
 
 	// Pozovi metodu koja vraca sve klijente
-	/*@GET
-	@Produces({ MediaType.APPLICATION_JSON })
-	@Path("/")
-	public Response getUsers() {
-
-		List<Subscriber> sList = FunctionIntegrator.getAllSubscribers();
-		if (sList.size() == 0)
-			return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
-
-		return Response.ok(sList).build();
-	}*/
+	/*
+	 * @GET
+	 * 
+	 * @Produces({ MediaType.APPLICATION_JSON })
+	 * 
+	 * @Path("/") public Response getUsers() {
+	 * 
+	 * List<Subscriber> sList = FunctionIntegrator.getAllSubscribers(); if
+	 * (sList.size() == 0) return
+	 * Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+	 * 
+	 * return Response.ok(sList).build(); }
+	 */
 
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
@@ -43,47 +45,44 @@ public class SubscriberWebServices {
 	public Response getUser(@PathParam("id") String subId) {
 		List<Subscriber> sList = FunctionIntegrator.getSubscriber(subId);
 		c = null;
-		if (sList.size() > 0){
+		if (sList.size() > 0) {
 			c = sList.get(0);
-		}
-		else
+		} else
 			return Response.status(Response.Status.NOT_FOUND).build();
-		
-		return Response.ok(c).build(); 
+
+		return Response.ok(c).build();
 	}
 
-	/*@GET
-	@Produces({ MediaType.APPLICATION_JSON })
-	@Path("/insert/{id}")
-	public Response insertUser(@PathParam("id") String subId) {
-		c = new Subscriber();
-		c.setSubscriberId(subId);
-		// kasnije treba promijeniti da ide iz PathParam
-		//c.setMsisdn(123L);
-		try {
-			EntityManagerSingleton.getEntityManager().getTransaction().begin();
-			EntityManagerSingleton.getEntityManager().persist(c);
-			EntityManagerSingleton.getEntityManager().getTransaction().commit();
-
-			logger.warn("sub created: " + subId);
-		} catch (RollbackException re) {
-			for (Throwable t = re.getCause(); t != null; t = t.getCause()) {
-				// System.out.println("Exc777:" + t.getCause());
-				if (t instanceof org.postgresql.util.PSQLException)
-					return Response.status(Response.Status.CONFLICT).build();
-			}
-			return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
-		}
-		return Response.ok(String.valueOf(c.getId())).build();
-	}
-
-	// Pozovi metodu koja vraca sve msisdn za korisnika
-	@GET
-	@Produces({ MediaType.APPLICATION_JSON })
-	@Path("/msisdn")
-	public Response getMsisdn(@QueryParam("id") String customerId) {
-		return Response.ok(FunctionIntegrator.getCustomer(customerId)).build();
-	}*/
+	/*
+	 * @GET
+	 * 
+	 * @Produces({ MediaType.APPLICATION_JSON })
+	 * 
+	 * @Path("/insert/{id}") public Response insertUser(@PathParam("id") String
+	 * subId) { c = new Subscriber(); c.setSubscriberId(subId); // kasnije treba
+	 * promijeniti da ide iz PathParam //c.setMsisdn(123L); try {
+	 * EntityManagerSingleton.getEntityManager().getTransaction().begin();
+	 * EntityManagerSingleton.getEntityManager().persist(c);
+	 * EntityManagerSingleton.getEntityManager().getTransaction().commit();
+	 * 
+	 * logger.warn("sub created: " + subId); } catch (RollbackException re) { for
+	 * (Throwable t = re.getCause(); t != null; t = t.getCause()) { //
+	 * System.out.println("Exc777:" + t.getCause()); if (t instanceof
+	 * org.postgresql.util.PSQLException) return
+	 * Response.status(Response.Status.CONFLICT).build(); } return
+	 * Response.status(Response.Status.SERVICE_UNAVAILABLE).build(); } return
+	 * Response.ok(String.valueOf(c.getId())).build(); }
+	 * 
+	 * // Pozovi metodu koja vraca sve msisdn za korisnika
+	 * 
+	 * @GET
+	 * 
+	 * @Produces({ MediaType.APPLICATION_JSON })
+	 * 
+	 * @Path("/msisdn") public Response getMsisdn(@QueryParam("id") String
+	 * customerId) { return
+	 * Response.ok(FunctionIntegrator.getCustomer(customerId)).build(); }
+	 */
 
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })

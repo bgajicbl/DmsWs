@@ -24,7 +24,6 @@ public class UserWebServices {
 		
 			return Response.ok(x).build(); 
 		
-		
 	}
 
 	// Pozovi metodu koja vraca sve korisnike

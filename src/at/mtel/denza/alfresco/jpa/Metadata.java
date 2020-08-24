@@ -21,20 +21,19 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import at.mtel.denza.alfresco.json.JsonDateDeserializer;
 import at.mtel.denza.alfresco.json.JsonDateSerializer;
 
-
 /**
  * The persistent class for the metadata database table.
  * 
  */
 @Entity
-@Table(name="metadata")
-@NamedQuery(name="Metadata.findAll", query="SELECT m FROM Metadata m")
-@SequenceGenerator(name="metadata_seq",sequenceName="metadata_id_seq", allocationSize=1)
+@Table(name = "metadata")
+@NamedQuery(name = "Metadata.findAll", query = "SELECT m FROM Metadata m")
+@SequenceGenerator(name = "metadata_seq", sequenceName = "metadata_id_seq", allocationSize = 1)
 public class Metadata implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(generator="metadata_seq")
+	@GeneratedValue(generator = "metadata_seq")
 	private Integer id;
 
 	private String noderef;
@@ -42,19 +41,19 @@ public class Metadata implements Serializable {
 	@Temporal(TemporalType.DATE)
 	private Date period;
 
-	//bi-directional many-to-one association to Customer
+	// bi-directional many-to-one association to Customer
 	@ManyToOne()
-	@JoinColumn(name="customers_id")
+	@JoinColumn(name = "customers_id")
 	private Customer customer;
-	
-	//bi-directional many-to-one association to Subscriber
-	@ManyToOne()
-	@JoinColumn(name="subscriber_id")
-	private Subscriber subscriber; 
 
-	//bi-directional many-to-one association to Document
+	// bi-directional many-to-one association to Subscriber
+	@ManyToOne()
+	@JoinColumn(name = "subscriber_id")
+	private Subscriber subscriber;
+
+	// bi-directional many-to-one association to Document
 	@ManyToOne
-	@JoinColumn(name="documents_id")
+	@JoinColumn(name = "documents_id")
 	private Document document;
 
 	public Metadata() {
@@ -76,17 +75,17 @@ public class Metadata implements Serializable {
 		this.noderef = noderef;
 	}
 
-	@JsonSerialize(using=JsonDateSerializer.class)
+	@JsonSerialize(using = JsonDateSerializer.class)
 	public Date getPeriod() {
 		return this.period;
 	}
 
-	@JsonDeserialize(using=JsonDateDeserializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	public void setPeriod(Date period) {
 		this.period = period;
 	}
 
-	@JsonIgnoreProperties({"id", "subscribers"})
+	@JsonIgnoreProperties({ "id", "subscribers" })
 	public Customer getCustomer() {
 		return this.customer;
 	}
@@ -95,7 +94,7 @@ public class Metadata implements Serializable {
 		this.customer = customer;
 	}
 
-	@JsonIgnoreProperties({"id"})
+	@JsonIgnoreProperties({ "id" })
 	public Document getDocument() {
 		return this.document;
 	}
@@ -104,7 +103,7 @@ public class Metadata implements Serializable {
 		this.document = document;
 	}
 
-	@JsonIgnoreProperties({"id"})
+	@JsonIgnoreProperties({ "id" })
 	public Subscriber getSubscriber() {
 		return subscriber;
 	}
@@ -112,6 +111,5 @@ public class Metadata implements Serializable {
 	public void setSubscriber(Subscriber subscriber) {
 		this.subscriber = subscriber;
 	}
-	
-	
+
 }

@@ -15,9 +15,8 @@ public class EntityManagerSingleton {
 			try {
 				em = Persistence.createEntityManagerFactory("RestWebService").createEntityManager();
 			} catch (PersistenceException e) {
-				 //napraviti error response
-				throw new WebApplicationException(e.getMessage(),
-						Response.Status.SERVICE_UNAVAILABLE);
+				// napraviti error response
+				throw new WebApplicationException(e.getMessage(), Response.Status.SERVICE_UNAVAILABLE);
 			}
 		}
 		return em;

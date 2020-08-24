@@ -1,7 +1,10 @@
 package at.mtel.denza.alfresco.ws.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.RollbackException;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -22,15 +25,15 @@ import at.mtel.denza.alfresco.util.DateUtil;
 public class MetadataWebServices {
 
 	// Metadata za sve dokumente
-	/*@GET
-	@Produces({ MediaType.APPLICATION_JSON })
-	@Path("/")
-	public Response getAllIds() {
-		List<Metadata> x = FunctionIntegrator.getAllMetadata();
-		GenericEntity<List<Metadata>> list = new GenericEntity<List<Metadata>>(x) {
-		};
-		return Response.ok(list).build();
-	}*/
+	/*
+	 * @GET
+	 * 
+	 * @Produces({ MediaType.APPLICATION_JSON })
+	 * 
+	 * @Path("/") public Response getAllIds() { List<Metadata> x =
+	 * FunctionIntegrator.getAllMetadata(); GenericEntity<List<Metadata>> list = new
+	 * GenericEntity<List<Metadata>>(x) { }; return Response.ok(list).build(); }
+	 */
 
 	// Metadata za sve dokumente za poslati ID klijenta
 	@GET
@@ -71,7 +74,7 @@ public class MetadataWebServices {
 			@PathParam("doctype") int doctype, @PathParam("from") String from, @PathParam("to") String to) {
 		List<Customer> customerList = FunctionIntegrator.getCustomer(customerId);
 		if (customerList.size() == 0)
-			return Response.status(Response.Status.NOT_FOUND).build(); 
+			return Response.status(Response.Status.NOT_FOUND).build();
 		try {
 			List<Metadata> x = FunctionIntegrator.getMetadata(customerId, doctype, from, to);
 			GenericEntity<List<Metadata>> list = new GenericEntity<List<Metadata>>(x) {
@@ -81,7 +84,7 @@ public class MetadataWebServices {
 			return Response.status(Response.Status.NOT_IMPLEMENTED).build();
 		}
 	}
-	
+
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Path("/subscriber/{subscriber}")
@@ -95,7 +98,7 @@ public class MetadataWebServices {
 		};
 		return Response.ok(list).build();
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/subscriber/{subscriber}/doctype/{doctype}")
@@ -110,7 +113,7 @@ public class MetadataWebServices {
 		};
 		return Response.status(201).entity(list).build();
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/subscriber/{subscriber}/doctype/{doctype}/from/{from}/to/{to}")
@@ -118,8 +121,8 @@ public class MetadataWebServices {
 			@PathParam("doctype") int doctype, @PathParam("from") String from, @PathParam("to") String to) {
 		List<Subscriber> subscriberList = FunctionIntegrator.getSubscriber(subscriberId);
 		if (subscriberList.size() == 0)
-			return Response.status(Response.Status.NOT_FOUND).build(); 
-		
+			return Response.status(Response.Status.NOT_FOUND).build();
+
 		try {
 			List<Metadata> x = FunctionIntegrator.getSubscriberMetadata(subscriberId, doctype, from, to);
 			GenericEntity<List<Metadata>> list = new GenericEntity<List<Metadata>>(x) {
@@ -134,26 +137,69 @@ public class MetadataWebServices {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/insert")
-	public Response insertMetadata(@QueryParam("customerId") String customerId, @QueryParam("subscriberId") String subscriberId,
-			@QueryParam("fileName") String fileName, @QueryParam("nodeRef") String nodeRef, @QueryParam("period") int period,
+	public Response insertMetadata(@QueryParam("customerId") String customerId,
+			@QueryParam("subscriberId") String subscriberId, @QueryParam("fileName") String fileName,
+			@QueryParam("nodeRef") String nodeRef, @QueryParam("period") int period,
 			@QueryParam("documentType") int doctype, @QueryParam("user") int user) {
+
+		if (customerId == null || customerId.length() == 0 || nodeRef == null || nodeRef.length() == 0) {
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
+		boolean shouldPersist = false;
 		Metadata m = new Metadata();
-		// System.out.println(FunctionIntegrator.getCustomer(String.valueOf(customerId)).size());
-		Customer c = FunctionIntegrator.getCustomer(customerId).get(0);
+		Customer cust = null;
 		Subscriber sub = null;
-		if(subscriberId != null){
-			sub = FunctionIntegrator.getSubscriber(subscriberId).get(0);
+		List<Customer> customers = FunctionIntegrator.getCustomer(customerId);
+		// if customer doesn't exist, create it
+		if (customers.size() == 0) {
+			cust = new Customer();
+			cust.setCustomerId(customerId);
+			cust.setMsisdn(0L);
+			shouldPersist = true;
+		} else {
+			// customer exist
+			cust = FunctionIntegrator.getCustomer(customerId).get(0);
+		}
+		// if subscriber doesn't exist, create it
+		if (subscriberId != null && subscriberId.length() > 0) {
+			List<Subscriber> subscribers = FunctionIntegrator.getSubscriber(subscriberId);
+			if (subscribers.size() == 0) {
+				sub = new Subscriber();
+				sub.setSubscriberId(subscriberId);
+				sub.setCustomer(cust);
+				subscribers.add(sub);
+				cust.setSubscribers(subscribers);
+				shouldPersist = true;
+			} else {
+				sub = subscribers.get(0);
+			}
+		}
+		if (shouldPersist) {
+			try {
+				EntityManagerSingleton.getEntityManager().getTransaction().begin();
+				EntityManagerSingleton.getEntityManager().persist(cust);
+				EntityManagerSingleton.getEntityManager().getTransaction().commit();
+			} catch (RollbackException re) {
+				return Response.serverError().build();
+			}
 		}
 		Document d = FunctionIntegrator.getDocument(doctype);
-		m.setCustomer(c);
+		m.setCustomer(cust);
 		m.setSubscriber(sub);
 		m.setDocument(d);
 		m.setNoderef(nodeRef);
 		m.setPeriod(DateUtil.getDateFromString(String.valueOf(period)));
-		// System.out.println(m);
-		EntityManagerSingleton.getEntityManager().getTransaction().begin();
-		EntityManagerSingleton.getEntityManager().persist(m);
-		EntityManagerSingleton.getEntityManager().getTransaction().commit();
+		try {
+			EntityManagerSingleton.getEntityManager().getTransaction().begin();
+			EntityManagerSingleton.getEntityManager().persist(m);
+			EntityManagerSingleton.getEntityManager().getTransaction().commit();
+		} catch (RollbackException re) {
+			for (Throwable t = re.getCause(); t != null; t = t.getCause()) {
+				if (t instanceof org.postgresql.util.PSQLException)
+					return Response.status(Response.Status.CONFLICT).build();
+			}
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
 		return Response.ok(String.valueOf(m.getId())).build();
 	}
 }

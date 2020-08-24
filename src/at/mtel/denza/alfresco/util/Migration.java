@@ -17,7 +17,7 @@ public class Migration {
 
 	public static void main(String[] args) {
 		Migration m = new Migration();
-		m.migrateSubscriberToCustomer("9012", "1012618528");
+		// m.migrateSubscriberToCustomer("9012", "1012618528");
 	}
 
 	public void migrateSubscriberToCustomer(String customer, String subscriber) {
@@ -45,7 +45,7 @@ public class Migration {
 			if (EntityManagerSingleton.getEntityManager().getTransaction().isActive()) {
 				EntityManagerSingleton.getEntityManager().getTransaction().rollback();
 			}
-			System.err.println("failed! " +re.getMessage());
+			System.err.println("failed! " + re.getMessage());
 		}
 
 	}

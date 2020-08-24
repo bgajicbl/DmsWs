@@ -18,34 +18,35 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 /**
  * The persistent class for the Subscriber database table.
  * 
  */
 @Entity
-@Table(name="subscribers")
-@NamedQuery(name="Subscriber.findAll", query="SELECT s FROM Subscriber s")
-@SequenceGenerator(name="subscribers_seq",sequenceName="subscribers_id_seq", allocationSize=1)
+@Table(name = "subscribers")
+@NamedQuery(name = "Subscriber.findAll", query = "SELECT s FROM Subscriber s")
+@SequenceGenerator(name = "subscribers_seq", sequenceName = "subscribers_id_seq", allocationSize = 1)
 public class Subscriber implements Serializable {
-	private static final long serialVersionUID = 1L; 
+	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(generator="subscribers_seq")
+	@GeneratedValue(generator = "subscribers_seq")
 	private Integer id;
 
-	@Column(name="subscriber_id")
+	@Column(name = "subscriber_id")
 	private String subscriberId;
 
-	private Long msisdn; 
-	
-	//bi-directional many-to-one association to Customer
+	private Long msisdn;
+
+	// bi-directional many-to-one association to Customer
 	@ManyToOne
-	@JoinColumn(name="customer_id")
+	@JoinColumn(name = "customer_id")
 	@JsonBackReference
 	private Customer customer;
 
-	//bi-directional many-to-one association to Metadata
-	@OneToMany(mappedBy="subscriber", cascade = CascadeType.ALL)
+	// bi-directional many-to-one association to Metadata
+	@OneToMany(mappedBy = "subscriber", cascade = CascadeType.ALL)
 	private List<Metadata> metadata;
 
 	public Subscriber() {
@@ -103,7 +104,7 @@ public class Subscriber implements Serializable {
 	}
 
 	public void setCustomer(Customer customer) {
-		this.customer = customer; 
+		this.customer = customer;
 	}
 
 	@Override
@@ -142,7 +143,5 @@ public class Subscriber implements Serializable {
 			return false;
 		return true;
 	}
-	
-	
 
 }

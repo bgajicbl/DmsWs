@@ -25,10 +25,13 @@ import org.apache.chemistry.opencmis.commons.data.PropertyData;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException;
 
+import at.mtel.denza.alfresco.util.AlfrescoDataReader;
 import at.mtel.denza.alfresco.util.AppPropertyReader;
 
 @Path("/alfresco")
 public class DocumentWebServices {
+	
+	private AlfrescoDataReader alfrescoDataReader = new AlfrescoDataReader();
 
 	@GET
 	@Produces({ MediaType.APPLICATION_OCTET_STREAM })
@@ -47,7 +50,7 @@ public class DocumentWebServices {
 
 		Session session = null;
 		try {
-			session = getSession(ticket);
+			session = alfrescoDataReader.getSessionForTicket(ticket);
 		} catch (CmisUnauthorizedException e) {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
@@ -84,7 +87,7 @@ public class DocumentWebServices {
 
 		Session session = null;
 		try {
-			session = getSession(ticket);
+			session = alfrescoDataReader.getSessionForTicket(ticket);
 		} catch (CmisUnauthorizedException e) {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
@@ -100,21 +103,8 @@ public class DocumentWebServices {
 		return createResponse(session, results);
 	}
 
-	private Session getSession(String ticket) throws CmisUnauthorizedException {
-		SessionFactory factory = SessionFactoryImpl.newInstance();
-
-		Map<String, String> parameter = new HashMap<String, String>();
-		parameter.put(SessionParameter.USER, "ROLE_TICKET");
-		parameter.put(SessionParameter.PASSWORD, ticket);
-		parameter.put(SessionParameter.ATOMPUB_URL, ATOMPUB_URL);
-		parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
-		// get first repository and create session
-		Repository repository = factory.getRepositories(parameter).get(0);
-		Session session = repository.createSession();
-
-		return session;
-	}
-
+	
+	
 	private Response createResponse(Session session, ItemIterable<QueryResult> results) {
 		Object value = null;
 		for (QueryResult hit : results) {
@@ -130,7 +120,6 @@ public class DocumentWebServices {
 		return responseBuilder.build();
 	}
 
-	public static String ATOMPUB_URL = AppPropertyReader.getParameter("alfresco.atompub.url");
 	public static String QUERY = "SELECT alfcmis:nodeRef FROM cmis:document WHERE cmis:name = ?";
 	public static String EBILL_SUFFIX = "_eBill.PDF";
 	public static String POST_SUFFIX = "_post.PDF";

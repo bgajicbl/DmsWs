@@ -3,6 +3,7 @@ package at.mtel.denza.alfresco.jpa;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -37,6 +38,9 @@ public class Metadata implements Serializable {
 	private Integer id;
 
 	private String noderef;
+	
+	@Column(name = "file_name")
+	private String fileName;
 
 	@Temporal(TemporalType.DATE)
 	private Date period;
@@ -73,6 +77,14 @@ public class Metadata implements Serializable {
 
 	public void setNoderef(String noderef) {
 		this.noderef = noderef;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 	@JsonSerialize(using = JsonDateSerializer.class)

@@ -40,7 +40,7 @@ public class Metadata implements Serializable {
 	private String noderef;
 	
 	@Column(name = "file_name")
-	private String fileName;
+	private String filename;
 
 	@Temporal(TemporalType.DATE)
 	private Date period;
@@ -79,12 +79,12 @@ public class Metadata implements Serializable {
 		this.noderef = noderef;
 	}
 
-	public String getFileName() {
-		return fileName;
+	public String getFilename() {
+		return filename;
 	}
 
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 
 	@JsonSerialize(using = JsonDateSerializer.class)

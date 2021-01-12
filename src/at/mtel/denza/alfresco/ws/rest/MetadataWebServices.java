@@ -24,7 +24,7 @@ import at.mtel.denza.alfresco.util.DateUtil;
 
 @Path("/alfresco/metadatas")
 public class MetadataWebServices {
-	
+
 	private AlfrescoDataReader alfrescoDataReader = new AlfrescoDataReader();
 
 	// Metadata za sve dokumente
@@ -81,11 +81,19 @@ public class MetadataWebServices {
 		try {
 			List<Metadata> metadataList = FunctionIntegrator.getMetadata(customerId, doctype, from, to);
 			for (Metadata m : metadataList) {
-				//if filename is not present, call Alfresco to retrieve it
-				if(m.getFileName() == null || m.getFileName().length() == 0) {
-					System.out.println("filename null!");
-					String fn= alfrescoDataReader.getFileNameFromNodeRef("a22ab062-0a04-41da-aaef-a0f767d32142");
-					System.out.println("retreived filename: "+fn);
+				// if filename is not present, call Alfresco to retrieve it
+				if (m.getFilename() == null || m.getFilename().length() == 0) {
+					String filename = alfrescoDataReader.getFileNameFromNodeRef(m.getNoderef());
+					if (filename != null && filename.length() > 0) {
+						m.setFilename(filename);
+						try {
+							EntityManagerSingleton.getEntityManager().getTransaction().begin();
+							EntityManagerSingleton.getEntityManager().persist(m);
+							EntityManagerSingleton.getEntityManager().getTransaction().commit();
+						} catch (RollbackException re) {
+							System.out.println("Retreived filename not persisted: " + filename);
+						}
+					}
 				}
 
 			}
